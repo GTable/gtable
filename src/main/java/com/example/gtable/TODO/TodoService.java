@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 public class TodoService {
     public String add() {
         String todo = "TODO";
+        String todoList = "TODO LIST";
         return todo;
     }
 }
