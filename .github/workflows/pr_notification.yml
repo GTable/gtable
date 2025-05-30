@@ -1,0 +1,143 @@
+name: PR Discord Notification
+
+on:
+  pull_request:
+    types: [opened, closed, reopened]
+
+  schedule:
+    - cron: '25 11 * * 1-5'  # 월~금 오후 8시 25분 (KST = UTC+9)
+    
+  workflow_dispatch:
+
+env:
+  USERNAME: "돌아왔다 PR 리뷰 시간"
+  AVATAR_URL: "https://i.ibb.co/GvfVG729/R1280x0-fjpg.jpg"
+
+jobs:
+  notify:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Assign Random Reviewer
+        id: assign-reviewer
+        if: github.event.action == 'opened' || github.event.action == 'reopened'
+        uses: actions/github-script@v6
+        env:
+          REVIEWER_MAPPING: ${{ secrets.REVIEWER_MAPPING }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const mappingJson = process.env.REVIEWER_MAPPING;
+            let githubToDiscordMap;
+            try {
+              githubToDiscordMap = JSON.parse(mappingJson);
+            } catch (error) {
+              throw new Error('Invalid JSON in REVIEWER_MAPPING secret.');
+            }
+            
+            const allReviewers = Object.keys(githubToDiscordMap);
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+
+            const prAuthor = pullRequest.user.login;
+            const reviewers = allReviewers.filter(reviewer => reviewer.toLowerCase() !== prAuthor.toLowerCase());
+
+            if (reviewers.length === 0) {
+              throw new Error('No valid reviewers available (all reviewers are PR authors).');
+            }
+
+            const randomReviewer = reviewers[Math.floor(Math.random() * reviewers.length)];
+
+            if (pullRequest.requested_reviewers.length === 0) {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                reviewers: [randomReviewer]
+              });
+
+              const discordId = githubToDiscordMap[randomReviewer];
+              if (!discordId) {
+                throw new Error(`Discord ID not found for GitHub user: ${randomReviewer}`);
+              }
+
+              core.setOutput('reviewer', randomReviewer);
+              core.setOutput('discord_id', discordId);
+            } else {
+              const existingReviewer = pullRequest.requested_reviewers[0].login;
+              const discordId = githubToDiscordMap[existingReviewer];
+              if (!discordId) {
+                throw new Error(`Discord ID not found for GitHub user: ${existingReviewer}`);
+              }
+
+              core.setOutput('reviewer', existingReviewer);
+              core.setOutput('discord_id', discordId);
+            }
+
+      - name: Send Discord Notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+        run: |
+          prTitle="${{ github.event.pull_request.title }}"
+          prUser="${{ github.event.pull_request.user.login }}"
+          prAction="${{ github.event.action }}"
+          prUrl="${{ github.event.pull_request.html_url }}"
+          prMerged="${{ github.event.pull_request.merged }}"
+          prActor="${{ github.actor }}"  
+          prReviewer="${{ steps.assign-reviewer.outputs.reviewer }}"
+          prReviewerDiscordID="${{ steps.assign-reviewer.outputs.discord_id }}"
+
+          if [ "$prAction" == "opened" ]; then
+            MESSAGE="**📢 새로운 PR이 도착했습니다!**
+          - <@${prReviewerDiscordID}> 님 리뷰어로 할당되었습니다!! 🙏
+          - PR 제목 : ${prTitle}
+          - 등록한 사람 : ${prUser}
+          - 리뷰어 : <@${prReviewerDiscordID}>
+          - 리뷰하러 가기 >> [Click](${prUrl})"
+          
+          elif [ "$prAction" == "closed" ] && [ "$prMerged" == "true" ]; then
+            MESSAGE="**🎉 PR이 머지되었습니다!**
+          - PR 제목 : ${prTitle}
+          - 작업 수행자 : ${prActor}
+          - PR 확인하기 >> [Click](${prUrl})"
+          
+          elif [ "$prAction" == "closed" ]; then
+            MESSAGE="**🚨 PR이 닫혔습니다!**
+          - PR 제목 : ${prTitle}
+          - 작업 수행자 : ${prActor}
+          - PR 확인하기 >> [Click](${prUrl})"
+          
+          elif [ "$prAction" == "reopened" ]; then
+            MESSAGE="**🔎 PR이 다시 열렸습니다!**
+          - <@${prReviewerDiscordID}> 님 리뷰어로 할당되었습니다!! 🙏
+          - PR 제목 : ${prTitle}
+          - 작업 수행자 : ${prActor}
+          - 리뷰어 : <@${prReviewerDiscordID}>
+          - 리뷰하러 가기 >> [Click](${prUrl})"
+          
+          else
+           MESSAGE="❓ 알 수 없는 PR 이벤트: **${prTitle}** by ${prUser}. **[클릭](${prUrl})**"
+          fi
+          
+          DATA=$(jq -n \
+          --arg content "$MESSAGE" \
+          --arg username "$USERNAME" \
+          --arg avatar_url "$AVATAR_URL" \
+          '{content: $content, username: $username, avatar_url: $avatar_url}')
+
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H 'Content-Type: application/json' -d "$DATA" "$DISCORD_WEBHOOK_URL")
+
+          if [ "$RESPONSE" -ne 204 ]; then
+            echo "Failed to send Discord notification. HTTP Status Code: $RESPONSE"
+            exit 1
+          fi
