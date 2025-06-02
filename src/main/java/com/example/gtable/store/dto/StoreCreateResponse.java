@@ -2,7 +2,6 @@ package com.example.gtable.store.dto;
 
 import java.time.LocalDateTime;
 
-import com.example.gtable.global.entity.BaseTimeEntity;
 import com.example.gtable.store.model.Store;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class StoreCreateResponse extends BaseTimeEntity {
+public class StoreCreateResponse {
 
 	private Long storeId;
 	private Long departmentId;

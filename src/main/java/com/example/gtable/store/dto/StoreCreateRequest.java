@@ -1,6 +1,5 @@
 package com.example.gtable.store.dto;
 
-import com.example.gtable.global.entity.BaseTimeEntity;
 import com.example.gtable.store.model.Store;
 
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreCreateRequest extends BaseTimeEntity {
+public class StoreCreateRequest {
 
 	@NotNull
 	private Long departmentId;
