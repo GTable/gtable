@@ -41,8 +41,11 @@ public class Store extends BaseTimeEntity {
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive = false;
 
+	@Column
+	private Boolean deleted = false;
+
 	public Store(LocalDateTime createdAt, Long storeId, Long departmentId, String name, String location,
-		String description, String storeImageUrl, Boolean isActive) {
+		String description, String storeImageUrl, Boolean isActive, Boolean deleted) {
 		super(createdAt);
 		this.storeId = storeId;
 		this.departmentId = departmentId;
@@ -51,5 +54,30 @@ public class Store extends BaseTimeEntity {
 		this.description = description;
 		this.storeImageUrl = storeImageUrl;
 		this.isActive = isActive;
+		this.deleted = deleted;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setStoreImageUrl(String url) {
+		this.storeImageUrl = url;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public void setIsDelete(Boolean deleted) {
+		this.deleted = deleted;
 	}
 }
