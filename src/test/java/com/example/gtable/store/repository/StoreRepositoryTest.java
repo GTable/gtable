@@ -2,7 +2,6 @@ package com.example.gtable.store.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,6 @@ public class StoreRepositoryTest {
 			.description("설명")
 			.storeImageUrl("http://img")
 			.isActive(true)
-			.createdAt(LocalDateTime.now())
 			.build();
 
 		// when
