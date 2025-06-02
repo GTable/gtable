@@ -21,6 +21,7 @@ public class StoreCreateResponse extends BaseTimeEntity {
 	private String description;
 	private String storeImageUrl;
 	private Boolean isActive;
+	private Boolean deleted;
 	private LocalDateTime createdAt;
 
 	public static StoreCreateResponse fromEntity(Store store) {
@@ -33,6 +34,7 @@ public class StoreCreateResponse extends BaseTimeEntity {
 			.description(store.getDescription())
 			.storeImageUrl(store.getStoreImageUrl())
 			.isActive(store.getIsActive())
+			.deleted(store.getDeleted())
 			.build();
 	}
 }

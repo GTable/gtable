@@ -34,6 +34,7 @@ public class StoreCreateRequest extends BaseTimeEntity {
 			.description(description)
 			.storeImageUrl(storeImageUrl)
 			.isActive(false)
+			.deleted(false)
 			.build();
 	}
 }
