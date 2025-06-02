@@ -77,7 +77,7 @@ public class Store extends BaseTimeEntity {
 		this.isActive = isActive;
 	}
 
-	public void setIsDelete(Boolean deleted) {
+	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
 }

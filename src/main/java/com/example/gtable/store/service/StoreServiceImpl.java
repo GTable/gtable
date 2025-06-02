@@ -87,7 +87,7 @@ public class StoreServiceImpl implements StoreService {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
 			.orElseThrow(() -> new NotFoundException(storeId + " store not found."));
 
-		store.setIsDelete(true);
+		store.setDeleted(true);
 		storeRepository.save(store);
 
 		return "Store ID " + storeId + " 삭제되었습니다.";
