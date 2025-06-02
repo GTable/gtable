@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import com.example.gtable.store.dto.StoreCreateRequest;
 import com.example.gtable.store.dto.StoreCreateResponse;
@@ -14,6 +13,7 @@ import com.example.gtable.store.dto.StoreUpdateRequest;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,7 +53,7 @@ public class StoreServiceImpl implements StoreService {
 	@Transactional(readOnly = true)
 	public StoreReadDto getStoreByStoreId(Long storeId) {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
-			.orElseThrow(() -> new NotFoundException(storeId + " store not found."));
+			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 
 		return StoreReadDto.fromEntity(store);
 	}
@@ -62,7 +62,7 @@ public class StoreServiceImpl implements StoreService {
 	@Transactional
 	public StoreReadDto updateStore(Long storeId, StoreUpdateRequest request) {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
-			.orElseThrow(() -> new NotFoundException(storeId + " store not found."));
+			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 		;
 
 		if (request.getName() != null)
@@ -85,7 +85,7 @@ public class StoreServiceImpl implements StoreService {
 	@Transactional
 	public String deleteStore(Long storeId) {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
-			.orElseThrow(() -> new NotFoundException(storeId + " store not found."));
+			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 
 		store.setDeleted(true);
 		storeRepository.save(store);
