@@ -15,5 +15,4 @@ public class StoreUpdateRequest {
 	private String description;
 	private String storeImageUrl;
 	private Boolean isActive;
-	private Boolean deleted;
 }

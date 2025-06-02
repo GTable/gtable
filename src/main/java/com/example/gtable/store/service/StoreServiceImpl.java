@@ -63,7 +63,6 @@ public class StoreServiceImpl implements StoreService {
 	public StoreReadDto updateStore(Long storeId, StoreUpdateRequest request) {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
 			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
-		;
 
 		if (request.getName() != null)
 			store.setName(request.getName());
