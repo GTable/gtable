@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GTableApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GTableApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(GTableApplication.class, args);
+	}
 
 }
