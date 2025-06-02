@@ -13,7 +13,7 @@ import io.jsonwebtoken.Jwts;
 
 @Component
 public class JwtUtil {
-	private SecretKey secretKey;
+	private final SecretKey secretKey;
 
 	// 시크릿 키를 암호화하여, 키 생성
 	public JwtUtil(@Value("${jwt.secret}") String secret) {

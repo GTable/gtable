@@ -3,10 +3,13 @@ package com.example.gtable.global.security.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponse {
-	private String message;
-	private String code;
-	private Map<String, String> errors;
+	private final String message;
+	private final String code;
+	private final Map<String, String> errors;
 
 	public ErrorResponse(String message, String code) {
 		this.message = message;
@@ -18,18 +21,6 @@ public class ErrorResponse {
 		this.message = message;
 		this.code = code;
 		this.errors = errors;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public Map<String, String> getErrors() {
-		return errors;
 	}
 
 }

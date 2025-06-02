@@ -1,5 +1,10 @@
 package com.example.gtable.global.security.exception;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum ErrorMessage {
 	// global
 	INVALID_INPUT_VALUE("입력값이 올바르지 않습니다.", "g001"),
@@ -14,16 +19,4 @@ public enum ErrorMessage {
 	private final String message;
 	private final String code;
 
-	ErrorMessage(String message, String code) {
-		this.message = message;
-		this.code = code;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public String getMessage() {
-		return message;
-	}
 }
