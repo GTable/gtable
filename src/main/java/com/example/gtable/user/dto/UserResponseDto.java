@@ -1,11 +1,18 @@
 package com.example.gtable.user.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 @Builder
+@Getter
+@RequiredArgsConstructor
 public class UserResponseDto {
-    private Long userId;
-    private String role;
+    @JsonProperty("userId")
+    private final Long userId;
+    @JsonProperty("role")
+    private final String role;
+
 }

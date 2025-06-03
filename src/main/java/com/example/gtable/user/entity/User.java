@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 생성

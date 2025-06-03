@@ -45,21 +45,21 @@ public class JwtUtil {
 	}
 
 	public String getTokenCategory(String token) {
-		return Jwts.parser().setSigningKey(secretKey).build()
+		return Jwts.parser().verifyWith(secretKey).build()
 			.parseClaimsJws(token)
 			.getBody()
 			.get("tokenCategory", String.class);
 	}
 
 	public String getRole(String token) {
-		return Jwts.parser().setSigningKey(secretKey).build()
+		return Jwts.parser().verifyWith(secretKey).build()
 			.parseClaimsJws(token)
 			.getBody()
 			.get("role", String.class);
 	}
 
 	public Long getUserId(String token) {
-		return Jwts.parser().setSigningKey(secretKey).build()
+		return Jwts.parser().verifyWith(secretKey).build()
 			.parseClaimsJws(token)
 			.getBody()
 			.get("userId", Long.class);

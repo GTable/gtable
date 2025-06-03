@@ -12,13 +12,16 @@ public enum Role {
     private final String name;
 
     // Role의 String name -> Role enum으로 변경
-    public static Role fromString(String name){
+    public static Role fromString(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role name cannot be null or empty");
+        }
+
         for (Role role : Role.values()){
             if (role.name.equalsIgnoreCase(name)){
                 return role;
             }
         }
-
-        return Role.USER;
+        throw new IllegalArgumentException("Unknown role: " + name);
     }
 }

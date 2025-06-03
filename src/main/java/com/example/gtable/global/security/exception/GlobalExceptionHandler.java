@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 
 	@ResponseStatus(value = BAD_REQUEST)
 	@ExceptionHandler(MissingRequestValueException.class)
-	public ErrorResponse handleIllegalArgumentException(MissingRequestValueException e) {
+	public ErrorResponse handleMissingRequestValueException(MissingRequestValueException e) {
 		log.error("handleMissingRequestValueExceptionException", e);
 		return new ErrorResponse(INVALID_INPUT_VALUE.getMessage(), INVALID_INPUT_VALUE.getCode());
 	}
