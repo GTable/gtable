@@ -52,8 +52,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // S3
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.683'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:3.3.0'
+    implementation 'software.amazon.awssdk:s3:2.20.14'
     // Resilience4j
     implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
     implementation 'io.github.resilience4j:resilience4j-bulkhead:1.7.1'
