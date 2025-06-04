@@ -2,6 +2,7 @@ package com.example.gtable.storeImage.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,15 +35,26 @@ public class StoreImageService {
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + storeId));
 
-		List<StoreImageUploadResponse> imageUploadResponses = new ArrayList<>();
-		for (int i = 0; i < files.size(); i++) {
-			S3Service.S3UploadResult uploadResult;
-			try {
-				uploadResult = s3Service.upload(storeId, files.get(i)).get();
-			} catch (Exception e) {
-				throw new RuntimeException("S3 업로드 실패", e);
-			}
+		// 모든 파일을 비동기로 업로드
+		List<CompletableFuture<S3Service.S3UploadResult>> uploadFutures = new ArrayList<>();
+		for (MultipartFile file : files) {
+			uploadFutures.add(s3Service.upload(storeId, file));
+		}
 
+		// 모든 업로드 완료 대기
+		List<S3Service.S3UploadResult> uploadResults;
+		try {
+			uploadResults = uploadFutures.stream()
+				.map(CompletableFuture::join)
+				.toList();
+		} catch (Exception e) {
+			throw new RuntimeException("S3 업로드 실패", e);
+		}
+
+		// DB 저장은 모든 S3 업로드 성공 후 수행
+		List<StoreImageUploadResponse> imageUploadResponses = new ArrayList<>();
+		for (int i = 0; i < uploadResults.size(); i++) {
+			S3Service.S3UploadResult uploadResult = uploadResults.get(i);
 			StoreImage storeImage = StoreImage.builder()
 				.store(store)
 				.imageUrl(uploadResult.url())
