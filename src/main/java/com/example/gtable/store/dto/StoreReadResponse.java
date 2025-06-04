@@ -14,7 +14,7 @@ public class StoreReadResponse {
 	private List<StoreReadDto> storeReadDtos;
 	private boolean hasNext;
 
-	public static StoreReadResponse fromEntity(List<StoreReadDto> storeReadDtos, boolean hasNext) {
+	public static StoreReadResponse of(List<StoreReadDto> storeReadDtos, boolean hasNext) {
 		return StoreReadResponse.builder()
 			.storeReadDtos(storeReadDtos)
 			.hasNext(hasNext)
