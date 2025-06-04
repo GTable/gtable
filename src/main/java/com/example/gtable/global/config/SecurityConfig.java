@@ -51,7 +51,8 @@ public class SecurityConfig {
 				.requestMatchers(
 					"/oauth2/authorization/kakao", // 카카오 로그인 요청
 					"/login/oauth2/code/**", // 카카오 인증 콜백
-					"/api/refresh-token")  // refresh token (토큰 갱신)
+					"/api/refresh-token",
+					"/stores/**")  // refresh token (토큰 갱신)
 				.permitAll()
 				.anyRequest().authenticated() // 그외 요청은 허가된 사람만 인가
 			)
