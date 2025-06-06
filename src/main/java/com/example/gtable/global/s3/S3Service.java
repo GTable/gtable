@@ -28,9 +28,9 @@ public class S3Service {
 
 	@Bulkhead(name = "s3UploadBulkhead", type = Bulkhead.Type.THREADPOOL)
 	@Async("s3UploadExecutor")
-	public CompletableFuture<S3UploadResult> upload(Long storeId, MultipartFile file) {
+	public CompletableFuture<S3UploadResult> upload(String type, Long refId, MultipartFile file) {
 		try (InputStream inputStream = file.getInputStream()) {
-			String key = createFileKey(storeId, file.getOriginalFilename());
+			String key = createFileKey(type, refId, file.getOriginalFilename());
 			ObjectMetadata metadata = new ObjectMetadata();
 			metadata.setContentLength(file.getSize());
 
@@ -51,7 +51,7 @@ public class S3Service {
 		}
 	}
 
-	private String createFileKey(Long storeId, String filename) {
-		return "store/" + storeId + "/" + UUID.randomUUID() + "-" + filename;
+	private String createFileKey(String type, Long refId, String filename) {
+		return type + "/" + refId + "/" + UUID.randomUUID() + "-" + filename;
 	}
 }
