@@ -1,5 +1,7 @@
 package com.example.gtable.user.entity;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -25,6 +27,9 @@ public class User {
     private String email; // 카카오 이메일
 
     @Column(nullable = false)
+    private String password; // 관리자 패스워드
+
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -37,8 +42,9 @@ public class User {
     private Role role;
 
     @Builder
-    public User(String email, String nickname, String profileImage, SocialType socialType, Role role){
+    public User(String email,String password, String nickname, String profileImage, SocialType socialType, Role role){
         this.email = email;
+        this.password = password;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.socialType = socialType;
@@ -61,5 +67,8 @@ public class User {
     // User 도메인 관련 비즈니스 로직 (예: 닉네임 변경)
     public void updateNickname(String nickname){
         this.nickname = nickname;
+    }
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        password = passwordEncoder.encode(password);
     }
 }
