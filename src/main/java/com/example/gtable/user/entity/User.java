@@ -26,6 +26,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email; // 카카오 이메일
 
+    @Column(nullable = false)
     private String password; // 관리자 패스워드
 
     @Column(nullable = false)
