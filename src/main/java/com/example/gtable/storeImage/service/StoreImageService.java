@@ -32,13 +32,14 @@ public class StoreImageService {
 			throw new IllegalArgumentException("파일과 타입의 개수가 일치해야 합니다.");
 		}
 
+		String type = "store";
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + storeId));
 
 		// 모든 파일을 비동기로 업로드
 		List<CompletableFuture<S3Service.S3UploadResult>> uploadFutures = new ArrayList<>();
 		for (MultipartFile file : files) {
-			uploadFutures.add(s3Service.upload(storeId, file));
+			uploadFutures.add(s3Service.upload(type, storeId, file));
 		}
 
 		// 모든 업로드 완료 대기
