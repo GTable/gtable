@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gtable.global.api.ApiUtils;
 import com.example.gtable.global.security.oauth2.dto.CustomOAuth2User;
+import com.example.gtable.user.dto.ManagerLoginRequestDto;
 import com.example.gtable.user.dto.ManagerSignupRequestDto;
 import com.example.gtable.user.dto.UserResponseDto;
 import com.example.gtable.user.entity.User;
@@ -19,7 +20,6 @@ import com.example.gtable.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,14 +42,24 @@ public class UserController {
 
     // 로그인된 유저 정보를 확인하는 api
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+    public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         User user = customOAuth2User.getUser();
 
         UserResponseDto userResponseDto = UserResponseDto.builder()
-                .userId(user.getId())
-                .role(user.getRole().getName())
-                .build();
+            .userId(user.getId())
+            .role(user.getRole().getName())
+            .build();
         return ResponseEntity.ok(userResponseDto);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid ManagerLoginRequestDto managerLoginRequestDto) {
+        return ResponseEntity
+            .ok()
+            .body(
+                ApiUtils.success(
+                    userService.login(managerLoginRequestDto)
+                )
+            );
+    }
 }

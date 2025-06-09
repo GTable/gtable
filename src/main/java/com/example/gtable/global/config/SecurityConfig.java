@@ -2,6 +2,8 @@ package com.example.gtable.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.example.gtable.global.security.jwt.JwtAuthorizationFilter;
 import com.example.gtable.global.security.jwt.JwtUtil;
 import com.example.gtable.global.security.oauth2.CustomOAuth2UserService;
+import com.example.gtable.user.service.CustomUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +28,7 @@ public class SecurityConfig {
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final com.example.gtable.global.security.oauth2.OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
 	private final JwtUtil jwtUtil;
-
+	private final CustomUserDetailService userDetailsService;
 	private final CorsConfigurationSource corsConfigurationSource;
 
 	@Bean
@@ -54,7 +57,8 @@ public class SecurityConfig {
 					"/oauth2/authorization/kakao", // 카카오 로그인 요청
 					"/login/oauth2/code/**", // 카카오 인증 콜백
 					"/api/refresh-token", // refresh token (토큰 갱신)
-					"/api/users/signup")
+					"/api/users/signup",
+					"/api/users/login")
 				.permitAll()
 				.anyRequest().authenticated() // 그외 요청은 허가된 사람만 인가
 			)
@@ -66,6 +70,13 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userDetailsService);
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		return authenticationProvider;
 	}
 
 }
