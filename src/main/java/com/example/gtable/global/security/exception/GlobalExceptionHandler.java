@@ -90,6 +90,7 @@ public class GlobalExceptionHandler {
 		return new ErrorResponse(e.getMessage(), INVALID_INPUT_VALUE.getCode());
 	}
 
+
 	private static Map<String, String> getErrors(MethodArgumentNotValidException e) {
 		return e.getBindingResult()
 			.getAllErrors()
