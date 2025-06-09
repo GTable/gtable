@@ -1,5 +1,6 @@
 package com.example.gtable.user.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,8 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationProvider authenticationProvider;
 	private final JwtUtil jwtUtil;
+	@Value("${jwt.access-token-expiration-ms}")
+	private long accessTokenExpiration;
 
 	@Transactional
 	public ManagerSignupResponseDto signup(ManagerSignupRequestDto managerSignupRequestDto) {
@@ -58,7 +61,7 @@ public class UserService {
 		);
 		MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
 		User user = userRepository.getReferenceById(memberDetails.getId());
-		String accessToken = jwtUtil.createAccessToken("accessToken", user.getId(), String.valueOf(user.getRole()), 30 * 60 * 1000L);
+		String accessToken = jwtUtil.createAccessToken("accessToken", user.getId(), String.valueOf(user.getRole()), accessTokenExpiration);
 		return ManagerLoginResponseDto.fromEntity(user,accessToken);
 	}
 }

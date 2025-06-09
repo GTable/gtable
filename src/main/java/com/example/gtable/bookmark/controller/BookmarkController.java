@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkController {
 	private final BookmarkService bookmarkService;
 	@PostMapping("/{storeId}")
-	public ResponseEntity<?> createStore(@PathVariable Long storeId,@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+	public ResponseEntity<?> createBookmark(@PathVariable Long storeId,@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 		BookmarkCreateResponse response = bookmarkService.createBookmark(storeId,customOAuth2User);
 
 		return ResponseEntity

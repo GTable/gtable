@@ -1,5 +1,6 @@
 package com.example.gtable.token.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenController {
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
+    @Value("${jwt.access-token-expiration-ms}")
+    private long accessTokenExpiration;
+    @Value("${jwt.refresh-token-expiration-ms}")
+    private long refreshTokenExpiration;
     @PostMapping
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request){
         String refreshToken = request.getRefreshToken();
@@ -34,8 +39,8 @@ public class TokenController {
         // 리프레시 토큰 유효성 검증
         if (tokenService.validateToken(refreshToken, userId)){
             // 유효한 토큰이라면, 새로운 accessToken, refreshToken 생성
-            String newAccessToken = jwtUtil.createAccessToken("accessToken", userId, role, 30 * 60 * 1000L);
-            String newRefreshToken = jwtUtil.createRefreshToken("refreshToken", userId, 30 * 24 * 60 * 60 * 1000L);
+            String newAccessToken = jwtUtil.createAccessToken("accessToken", userId, role, accessTokenExpiration);
+            String newRefreshToken = jwtUtil.createRefreshToken("refreshToken", userId, refreshTokenExpiration);
 
             // DB에 새로운 refreshToken으로 교체
             tokenService.updateRefreshToken(userId, refreshToken, newRefreshToken);
