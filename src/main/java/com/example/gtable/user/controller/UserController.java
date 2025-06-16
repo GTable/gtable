@@ -17,10 +17,13 @@ import com.example.gtable.user.dto.UserResponseDto;
 import com.example.gtable.user.entity.User;
 import com.example.gtable.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+@Tag(name = "User API", description = "사용자 API")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -30,6 +33,8 @@ public class UserController {
 
     // 관리자 회원가입
     @PostMapping("/signup")
+    @Operation(summary = "회원가입", description = "관리자 회원가입 / 실제로는 화면 구현X")
+    @ApiResponse(responseCode = "201", description = "회원가입")
     public ResponseEntity<?> signup(@RequestBody @Valid ManagerSignupRequestDto managerSignupRequestDto) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -42,6 +47,8 @@ public class UserController {
 
     // 로그인된 유저 정보를 확인하는 api
     @GetMapping("/me")
+    @Operation(summary = "내 정보 조회", description = "관리자/사용자 내정보 조회")
+    @ApiResponse(responseCode = "200", description = "마이페이지에 들어갈 정보")
     public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         User user = customOAuth2User.getUser();
 
@@ -53,6 +60,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "관리자 로그인", description = "관리자 로그인")
+    @ApiResponse(responseCode = "200", description = "관리자 로그인")
     public ResponseEntity<?> login(@RequestBody @Valid ManagerLoginRequestDto managerLoginRequestDto) {
         return ResponseEntity
             .ok()

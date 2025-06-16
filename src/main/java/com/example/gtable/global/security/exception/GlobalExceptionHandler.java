@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("!swagger") // 또는 커스텀 조건
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
