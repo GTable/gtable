@@ -12,6 +12,9 @@ import com.example.gtable.store.dto.StoreReadResponse;
 import com.example.gtable.store.dto.StoreUpdateRequest;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
+import com.example.gtable.storeImage.dto.StoreImageUploadResponse;
+import com.example.gtable.storeImage.model.StoreImage;
+import com.example.gtable.storeImage.repository.StoreImageRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreServiceImpl implements StoreService {
 
 	private final StoreRepository storeRepository;
+	private final StoreImageRepository storeImageRepository;
 
 	@Override
 	@Transactional
@@ -38,15 +42,18 @@ public class StoreServiceImpl implements StoreService {
 		List<Store> stores = storeRepository.findAllByDeletedFalse();
 
 		List<StoreReadDto> storeRead = stores.stream()
-			.map(StoreReadDto::fromEntity)
+			.map(store -> {
+				List<StoreImage> images = storeImageRepository.findByStore(store);
+				List<StoreImageUploadResponse> imageDto = images.stream()
+					.map(StoreImageUploadResponse::fromEntity)
+					.toList();
+				return StoreReadDto.fromEntity(store, imageDto);
+			})
 			.toList();
 
 		boolean hasNext = false;
 
-		return StoreReadResponse.fromEntity(
-			storeRead,
-			hasNext
-		);
+		return StoreReadResponse.of(storeRead, hasNext);
 	}
 
 	@Override
@@ -55,7 +62,12 @@ public class StoreServiceImpl implements StoreService {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
 			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 
-		return StoreReadDto.fromEntity(store);
+		List<StoreImage> images = storeImageRepository.findByStore(store);
+		List<StoreImageUploadResponse> imageDto = images.stream()
+			.map(StoreImageUploadResponse::fromEntity)
+			.toList();
+
+		return StoreReadDto.fromEntity(store, imageDto);
 	}
 
 	@Override
@@ -64,20 +76,20 @@ public class StoreServiceImpl implements StoreService {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
 			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 
-		if (request.getName() != null)
-			store.setName(request.getName());
-		if (request.getLocation() != null)
-			store.setLocation(request.getLocation());
-		if (request.getDescription() != null)
-			store.setDescription(request.getDescription());
-		if (request.getStoreImageUrl() != null)
-			store.setStoreImageUrl(request.getStoreImageUrl());
-		if (request.getIsActive() != null)
-			store.setIsActive(request.getIsActive());
+		store.updateInfo(
+			request.getName(),
+			request.getLocation(),
+			request.getDescription()
+		);
 
 		Store updatedStore = storeRepository.save(store);
 
-		return StoreReadDto.fromEntity(updatedStore);
+		List<StoreImage> images = storeImageRepository.findByStore(updatedStore);
+		List<StoreImageUploadResponse> imageDto = images.stream()
+			.map(StoreImageUploadResponse::fromEntity)
+			.toList();
+
+		return StoreReadDto.fromEntity(updatedStore, imageDto);
 	}
 
 	@Override
@@ -86,7 +98,7 @@ public class StoreServiceImpl implements StoreService {
 		Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
 			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 
-		store.setDeleted(true);
+		store.markAsDeleted();
 		storeRepository.save(store);
 
 		return "Store ID " + storeId + " 삭제되었습니다.";

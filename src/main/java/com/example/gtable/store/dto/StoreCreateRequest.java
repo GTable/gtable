@@ -23,15 +23,12 @@ public class StoreCreateRequest {
 
 	private String description;
 
-	private String storeImageUrl;
-
 	public Store toEntity() {
 		return Store.builder()
 			.departmentId(departmentId)
 			.name(name)
 			.location(location)
 			.description(description)
-			.storeImageUrl(storeImageUrl)
 			.isActive(false)
 			.deleted(false)
 			.build();

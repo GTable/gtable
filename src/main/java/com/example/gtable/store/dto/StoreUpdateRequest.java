@@ -13,6 +13,5 @@ public class StoreUpdateRequest {
 	private String name;
 	private String location;
 	private String description;
-	private String storeImageUrl;
 	private Boolean isActive;
 }
