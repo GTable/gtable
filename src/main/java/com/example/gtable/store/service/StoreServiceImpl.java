@@ -91,4 +91,10 @@ public class StoreServiceImpl implements StoreService {
 
 		return "Store ID " + storeId + " 삭제되었습니다.";
 	}
+
+	@Override
+	public List<Store> searchStoresByName(String name) {
+		return storeRepository.findByNameContainingIgnoreCase(name);
+	}
+
 }
