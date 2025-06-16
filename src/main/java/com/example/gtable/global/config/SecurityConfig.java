@@ -58,7 +58,15 @@ public class SecurityConfig {
 					"/login/oauth2/code/**", // 카카오 인증 콜백
 					"/api/refresh-token", // refresh token (토큰 갱신)
 					"/api/users/signup",
-					"/api/users/login")
+					"/api/users/login",
+					"/swagger-ui/**",
+					"/v3/api-docs/**",
+					"v3/api-docs.json",
+					"/api-docs/**",
+					"/swagger-resources/**",
+					"/webjars/**",
+					"/demo-ui.html"
+				)
 				.permitAll()
 				.anyRequest().authenticated() // 그외 요청은 허가된 사람만 인가
 			)
