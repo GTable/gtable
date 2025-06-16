@@ -103,4 +103,11 @@ public class StoreServiceImpl implements StoreService {
 
 		return "Store ID " + storeId + " 삭제되었습니다.";
 	}
+
+	@Override
+	public List<StoreReadDto> searchStoresByName(String name) {
+		List<Store> stores = storeRepository.findByNameContainingIgnoreCaseAndDeletedFalse(name);
+		return stores.stream().map(StoreReadDto::fromEntity).toList();
+	}
+
 }
