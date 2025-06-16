@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gtable.global.api.ApiUtils;
@@ -83,6 +84,17 @@ public class StoreController {
 			.body(
 				ApiUtils.success(
 					storeService.deleteStore(storeId)
+				)
+			);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<?> searchStores(@RequestParam("name") String name) {
+		return ResponseEntity
+			.ok()
+			.body(
+				ApiUtils.success(
+					storeService.searchStoresByName(name)
 				)
 			);
 	}
