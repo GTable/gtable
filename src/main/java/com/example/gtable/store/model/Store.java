@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -36,9 +37,11 @@ public class Store extends BaseTimeEntity {
 
 	private String description;
 
+	@Builder.Default
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive = false;
 
+	@Builder.Default
 	@Column
 	private Boolean deleted = false;
 
