@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Profile("!swagger") // 또는 커스텀 조건
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

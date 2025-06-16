@@ -29,7 +29,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.projectlombok:lombok'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -52,6 +51,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     //REDIS
     implementation 'org.redisson:redisson-spring-boot-starter:3.19.0'
+    // SWAGGER
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
 
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.awaitility:awaitility:4.3.0'
