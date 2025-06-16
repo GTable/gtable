@@ -93,8 +93,9 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public List<Store> searchStoresByName(String name) {
-		return storeRepository.findByNameContainingIgnoreCase(name);
+	public List<StoreReadDto> searchStoresByName(String name) {
+		List<Store> stores = storeRepository.findByNameContainingIgnoreCaseAndDeletedFalse(name);
+		return stores.stream().map(StoreReadDto::fromEntity).toList();
 	}
 
 }

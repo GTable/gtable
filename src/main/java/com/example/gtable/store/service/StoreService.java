@@ -21,6 +21,6 @@ public interface StoreService {
 
 	String deleteStore(Long storeId);
 
-	List<Store> searchStoresByName(String name);
+	List<StoreReadDto> searchStoresByName(String name);
 
 }
