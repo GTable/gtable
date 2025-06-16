@@ -1,5 +1,7 @@
 package com.example.gtable.store.service;
 
+import java.util.List;
+
 import com.example.gtable.store.dto.StoreCreateRequest;
 import com.example.gtable.store.dto.StoreCreateResponse;
 import com.example.gtable.store.dto.StoreReadDto;
@@ -17,5 +19,7 @@ public interface StoreService {
 	StoreReadDto updateStore(Long storeId, StoreUpdateRequest request);
 
 	String deleteStore(Long storeId);
+
+	List<StoreReadDto> searchStoresByName(String name);
 
 }
