@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -89,6 +92,7 @@ public class GlobalExceptionHandler {
 		log.error("handleMultipartException", e);
 		return new ErrorResponse(e.getMessage(), INVALID_INPUT_VALUE.getCode());
 	}
+
 
 	private static Map<String, String> getErrors(MethodArgumentNotValidException e) {
 		return e.getBindingResult()

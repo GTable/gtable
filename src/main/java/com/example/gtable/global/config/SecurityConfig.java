@@ -2,10 +2,14 @@ package com.example.gtable.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -13,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.example.gtable.global.security.jwt.JwtAuthorizationFilter;
 import com.example.gtable.global.security.jwt.JwtUtil;
 import com.example.gtable.global.security.oauth2.CustomOAuth2UserService;
+import com.example.gtable.user.service.CustomUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +28,7 @@ public class SecurityConfig {
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final com.example.gtable.global.security.oauth2.OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
 	private final JwtUtil jwtUtil;
-
+	private final CustomUserDetailService userDetailsService;
 	private final CorsConfigurationSource corsConfigurationSource;
 
 	@Bean
@@ -54,6 +59,16 @@ public class SecurityConfig {
 					"/api/refresh-token", // refresh token (토큰 갱신)
 					"/stores/**",
 					"/menus/**")
+					"/api/users/signup",
+					"/api/users/login",
+					"/swagger-ui/**",
+					"/v3/api-docs/**",
+					"/v3/api-docs.json",
+					"/api-docs/**",
+					"/swagger-resources/**",
+					"/webjars/**",
+					"/demo-ui.html"
+				)
 				.permitAll()
 				.anyRequest().authenticated() // 그외 요청은 허가된 사람만 인가
 			)
@@ -61,6 +76,17 @@ public class SecurityConfig {
 			.addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userDetailsService);
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		return authenticationProvider;
 	}
 
 }

@@ -14,4 +14,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	List<Store> findAllByDeletedFalse();
 
 	Optional<Store> findByStoreIdAndDeletedFalse(Long storeId);
+
+	List<Store> findByNameContainingIgnoreCaseAndDeletedFalse(String name);
 }
