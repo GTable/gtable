@@ -58,7 +58,7 @@ public class SecurityConfig {
 					"/login/oauth2/code/**", // 카카오 인증 콜백
 					"/api/refresh-token", // refresh token (토큰 갱신)
 					"/stores/**",
-					"/menus/**")
+					"/menus/**",
 					"/api/users/signup",
 					"/api/users/login",
 					"/swagger-ui/**",
