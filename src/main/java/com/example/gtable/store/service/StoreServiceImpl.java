@@ -1,6 +1,8 @@
 package com.example.gtable.store.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,4 +105,19 @@ public class StoreServiceImpl implements StoreService {
 
 		return "Store ID " + storeId + " 삭제되었습니다.";
 	}
+
+	@Override
+	public List<StoreReadDto> searchStoresByName(String name) {
+		List<Store> stores = storeRepository.findByNameContainingIgnoreCaseAndDeletedFalse(name);
+		return stores.stream()
+			.map(store -> {
+				List<StoreImage> images = storeImageRepository.findByStore(store);
+				List<StoreImageUploadResponse> imageDto = images.stream()
+					.map(StoreImageUploadResponse::fromEntity)
+					.toList();
+				return StoreReadDto.fromEntity(store, imageDto);
+			})
+			.toList();
+	}
+
 }
