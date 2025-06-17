@@ -17,13 +17,13 @@ import com.example.gtable.menuImage.service.MenuImageService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/menus")
+@RequestMapping("/admin/menus")
 @RequiredArgsConstructor
 public class MenuImageController {
 
 	private final MenuImageService menuImageService;
 
-	@PostMapping("/{menuId}/images")
+	@PostMapping("/images/{menuId}")
 	public ResponseEntity<?> uploadMenuImage(
 		@PathVariable Long menuId,
 		@RequestParam("file") MultipartFile file
@@ -39,9 +39,9 @@ public class MenuImageController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiUtils.success(response));
 	}
 
-	@DeleteMapping("/image/{id}")
-	public ResponseEntity<?> deleteMenuImage(@PathVariable Long id) {
-		menuImageService.delete(id);
+	@DeleteMapping("/images/{menuImageId}")
+	public ResponseEntity<?> deleteMenuImage(@PathVariable Long menuImageId) {
+		menuImageService.delete(menuImageId);
 		return ResponseEntity
 			.status(
 				HttpStatus.NO_CONTENT

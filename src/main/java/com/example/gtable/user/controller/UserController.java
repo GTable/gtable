@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Tag(name = "User API", description = "사용자 API")
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("admin/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     // 로그인된 유저 정보를 확인하는 api
-    @GetMapping("/me")
+    @GetMapping("/my-page")
     @Operation(summary = "내 정보 조회", description = "관리자/사용자 내정보 조회")
     @ApiResponse(responseCode = "200", description = "마이페이지에 들어갈 정보")
     public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
