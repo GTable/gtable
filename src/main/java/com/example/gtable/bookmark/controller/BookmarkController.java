@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkController {
 	private final BookmarkService bookmarkService;
 
-	@PostMapping("/{storeId}")
+	@PostMapping("/create/{storeId}")
 	@Operation(summary = "북마크 생성", description = "특정 주점에 대한 북마크 생성")
 	@ApiResponse(responseCode = "201", description = "북마크 생성")
 	public ResponseEntity<?> createBookmark(@PathVariable Long storeId,@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
