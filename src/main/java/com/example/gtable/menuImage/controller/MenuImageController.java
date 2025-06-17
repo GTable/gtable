@@ -46,7 +46,7 @@ public class MenuImageController {
 
 	@DeleteMapping("/images/{menuImageId}")
 	@Operation(summary = "업로드한 메뉴 이미지 삭제", description = "특정 주점에 대한 메뉴 이미지 삭제")
-	@ApiResponse(responseCode = "200", description = "메뉴 이미지 삭제")
+	@ApiResponse(responseCode = "204", description = "메뉴 이미지 삭제")
 	public ResponseEntity<?> deleteMenuImage(@PathVariable Long menuImageId) {
 		menuImageService.delete(menuImageId);
 		return ResponseEntity

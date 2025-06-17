@@ -63,7 +63,7 @@ public class StoreImageController {
 
 	@DeleteMapping("/store-images/{storeImageId}")
 	@Operation(summary = "주점 이미지 삭제", description = "주점 이미지 삭제")
-	@ApiResponse(responseCode = "200", description = "주점 이미지 삭제")
+	@ApiResponse(responseCode = "204", description = "주점 이미지 삭제")
 	public ResponseEntity<?> deleteStoreImage(@PathVariable Long storeImageId) {
 		storeImageService.delete(storeImageId);
 		return ResponseEntity
