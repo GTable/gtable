@@ -16,8 +16,11 @@ import com.example.gtable.global.api.ApiUtils;
 import com.example.gtable.storeImage.dto.StoreImageUploadResponse;
 import com.example.gtable.storeImage.service.StoreImageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
+@Tag(name = "StoreImage API", description = "주점 이미록 API")
 @RestController
 @RequestMapping("/admin/stores")
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class StoreImageController {
 	private final StoreImageService storeImageService;
 
 	@PostMapping("/store-images/{storeId}")
+	@Operation(summary = "주점 이미지 등록", description = "주점 이미지 등록")
+	@ApiResponse(responseCode = "201", description = "주점 이미지 등록")
 	public ResponseEntity<?> uploadStoreImage(
 		@PathVariable Long storeId,
 		@RequestParam("files") List<MultipartFile> files,
@@ -57,6 +62,8 @@ public class StoreImageController {
 	}
 
 	@DeleteMapping("/store-images/{storeImageId}")
+	@Operation(summary = "주점 이미지 삭제", description = "주점 이미지 삭제")
+	@ApiResponse(responseCode = "200", description = "주점 이미지 삭제")
 	public ResponseEntity<?> deleteStoreImage(@PathVariable Long storeImageId) {
 		storeImageService.delete(storeImageId);
 		return ResponseEntity

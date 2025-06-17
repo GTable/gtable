@@ -14,8 +14,11 @@ import com.example.gtable.global.api.ApiUtils;
 import com.example.gtable.menuImage.dto.MenuImageUploadResponse;
 import com.example.gtable.menuImage.service.MenuImageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
+@Tag(name = "Menu Image API", description = "메뉴 이미지 API")
 @RestController
 @RequestMapping("/admin/menus")
 @RequiredArgsConstructor
@@ -24,6 +27,8 @@ public class MenuImageController {
 	private final MenuImageService menuImageService;
 
 	@PostMapping("/images/{menuId}")
+	@Operation(summary = "메뉴 이미지 업로드", description = "특정 주점에 대한 메뉴 이미지 업로드")
+	@ApiResponse(responseCode = "201", description = "메뉴 이미지 업로드")
 	public ResponseEntity<?> uploadMenuImage(
 		@PathVariable Long menuId,
 		@RequestParam("file") MultipartFile file
@@ -40,6 +45,8 @@ public class MenuImageController {
 	}
 
 	@DeleteMapping("/images/{menuImageId}")
+	@Operation(summary = "업로드한 메뉴 이미지 삭제", description = "특정 주점에 대한 메뉴 이미지 삭제")
+	@ApiResponse(responseCode = "200", description = "메뉴 이미지 삭제")
 	public ResponseEntity<?> deleteMenuImage(@PathVariable Long menuImageId) {
 		menuImageService.delete(menuImageId);
 		return ResponseEntity
