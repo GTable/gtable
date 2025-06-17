@@ -19,13 +19,13 @@ import com.example.gtable.storeImage.service.StoreImageService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/stores")
+@RequestMapping("/admin/stores")
 @RequiredArgsConstructor
 public class StoreImageController {
 
 	private final StoreImageService storeImageService;
 
-	@PostMapping("/{storeId}/images")
+	@PostMapping("/store-images/{storeId}")
 	public ResponseEntity<?> uploadStoreImage(
 		@PathVariable Long storeId,
 		@RequestParam("files") List<MultipartFile> files,
@@ -56,9 +56,9 @@ public class StoreImageController {
 			);
 	}
 
-	@DeleteMapping("/image/{imageId}")
-	public ResponseEntity<?> deleteStoreImage(@PathVariable Long imageId) {
-		storeImageService.delete(imageId);
+	@DeleteMapping("/store-images/{storeImageId}")
+	public ResponseEntity<?> deleteStoreImage(@PathVariable Long storeImageId) {
+		storeImageService.delete(storeImageId);
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)
 			.body(

@@ -22,13 +22,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/stores")
+@RequestMapping("/admin/stores")
 @RequiredArgsConstructor
 public class StoreController {
 
 	private final StoreService storeService;
 
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<?> createStore(@Valid @RequestBody StoreCreateRequest request) {
 		StoreCreateResponse response = storeService.createStore(request);
 

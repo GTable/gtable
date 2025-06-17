@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/menus")
+@RequestMapping("/admin/menus")
 @RequiredArgsConstructor
 public class MenuController {
 
@@ -37,7 +37,7 @@ public class MenuController {
 			);
 	}
 
-	@GetMapping("/{storeId}")
+	@GetMapping("/all-menus/stores/{storeId}")
 	public ResponseEntity<?> getMenusByStoreId(@PathVariable Long storeId) {
 		return ResponseEntity
 			.status(HttpStatus.OK)
