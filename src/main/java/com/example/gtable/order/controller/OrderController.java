@@ -16,6 +16,7 @@ import com.example.gtable.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Order API", description = "주문 API")
@@ -31,7 +32,7 @@ public class OrderController {
 	public ResponseEntity<?> createOrder(
 		@PathVariable Long storeId,
 		@PathVariable Long tableId,
-		@RequestBody OrderCreateRequestDto orderCreateRequestDto
+		@RequestBody @Valid OrderCreateRequestDto orderCreateRequestDto
 		) {
 		OrderCreateResponseDto response = orderService.createOrder(storeId,tableId,orderCreateRequestDto);
 		return ResponseEntity

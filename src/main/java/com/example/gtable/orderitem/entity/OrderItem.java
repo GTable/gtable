@@ -1,4 +1,4 @@
-package com.example.gtable.orderItem.entity;
+package com.example.gtable.orderitem.entity;
 
 import com.example.gtable.global.entity.BaseTimeEntity;
 import com.example.gtable.menu.model.Menu;

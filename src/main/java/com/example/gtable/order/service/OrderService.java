@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gtable.menu.model.Menu;
 import com.example.gtable.menu.repository.MenuRepository;
@@ -15,8 +16,8 @@ import com.example.gtable.order.dto.OrderCreateRequestDto;
 import com.example.gtable.order.dto.OrderCreateResponseDto;
 import com.example.gtable.order.entity.UserOrder;
 import com.example.gtable.order.repository.OrderRepository;
-import com.example.gtable.orderItem.entity.OrderItem;
-import com.example.gtable.orderItem.repository.OrderItemRepository;
+import com.example.gtable.orderitem.entity.OrderItem;
+import com.example.gtable.orderitem.repository.OrderitemRepository;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
 
@@ -28,8 +29,15 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final StoreRepository storeRepository;
 	private final MenuRepository menuRepository;
-	private final OrderItemRepository orderItemRepository;
+	private final OrderitemRepository orderItemRepository;
+	@Transactional
 	public OrderCreateResponseDto createOrder(Long storeId, Long tableId, OrderCreateRequestDto orderCreateRequestDto) {
+		if (storeId == null || tableId == null || orderCreateRequestDto == null) {
+			        throw new IllegalArgumentException("필수 매개변수가 누락되었습니다");
+		}
+		if (orderCreateRequestDto.getItems() == null || orderCreateRequestDto.getItems().isEmpty()) {
+			throw new IllegalArgumentException("주문 항목이 없습니다");
+		}
 		// 1. Store 조회
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new IllegalArgumentException("store not found"));
@@ -51,17 +59,19 @@ public class OrderService {
 			.collect(Collectors.toMap(Menu::getId, Function.identity()));
 
 		// 4. 각 장바구니 항목에 대해 OrderItem 생성 및 저장
-		for (CartItemDto item : orderCreateRequestDto.getItems()) {
-			Menu menu = Optional.ofNullable(menuMap.get(item.getMenuId()))
-				.orElseThrow(() -> new IllegalArgumentException("menu not found: " + item.getMenuId()));
+		List<OrderItem> orderItems = (List<OrderItem>)orderCreateRequestDto.getItems().stream()
+			.map(item -> {
+				Menu menu = Optional.ofNullable(menuMap.get(item.getMenuId()))
+					.orElseThrow(() -> new IllegalArgumentException("menu not found: " + item.getMenuId()));
+				return OrderItem.builder()
+					.userOrder(savedOrder)
+					.menu(menu)
+					.quantity(item.getQuantity())
+					.build();
+			})
+			.toList();
 
-			OrderItem orderItem = OrderItem.builder()
-				.userOrder(savedOrder)
-				.menu(menu)
-				.quantity(item.getQuantity())
-				.build();
-			orderItemRepository.save(orderItem);
-		}
+		orderItemRepository.saveAll(orderItems);
 
 		// 5. 응답 반환
 		return OrderCreateResponseDto.fromEntity(savedOrder);
