@@ -45,16 +45,14 @@ public class OrderController {
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
 			.body(
-				ApiUtils.success(
-					response
-				)
+				ApiUtils.success(response)
 			);
 	}
 
 	@GetMapping("/items/{storeId}/{tableId}")
 	@Operation(summary = "테이블별 주문 아이템 조회", description = "비로그인(세션) 기준으로 테이블의 내 주문 목록만 조회")
 	@ApiResponse(responseCode = "200", description = "주문 조회")
-	public ResponseEntity<List<OrderItemListGetResponseDto>> getOrderItems(
+	public ResponseEntity<?> getOrderItems(
 		@PathVariable Long storeId,
 		@PathVariable Long tableId,
 		HttpSession session
@@ -63,6 +61,10 @@ public class OrderController {
 		String sessionId = session.getId();
 
 		List<OrderItemListGetResponseDto> orderItems = orderService.getOrderItems(storeId, tableId, sessionId);
-		return ResponseEntity.ok(orderItems);
+		return ResponseEntity.
+			status(HttpStatus.OK)
+			.body(
+				ApiUtils.success(orderItems)
+			);
 	}
 }
