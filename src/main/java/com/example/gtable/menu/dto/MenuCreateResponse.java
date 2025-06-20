@@ -16,7 +16,7 @@ public class MenuCreateResponse {
 	private Long storeId;
 	private String name;
 	private String description;
-	private String price;
+	private Integer price;
 	private LocalDateTime createdAt;
 
 	public static MenuCreateResponse fromEntity(Menu menu) {

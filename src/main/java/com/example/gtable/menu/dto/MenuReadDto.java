@@ -17,7 +17,7 @@ public class MenuReadDto {
 	private Long storeId;
 	private String name;
 	private String description;
-	private String price;
+	private Integer price;
 	private List<MenuImageUploadResponse> images;
 
 	public static MenuReadDto fromEntity(Menu menu, List<MenuImageUploadResponse> images) {

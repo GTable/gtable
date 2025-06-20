@@ -1,7 +1,6 @@
 package com.example.gtable.order.service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +18,7 @@ import com.example.gtable.order.dto.OrderCreateRequestDto;
 import com.example.gtable.order.dto.OrderCreateResponseDto;
 import com.example.gtable.order.entity.UserOrder;
 import com.example.gtable.order.repository.OrderRepository;
+import com.example.gtable.orderitem.dto.OrderItemListGetResponseDto;
 import com.example.gtable.orderitem.entity.OrderItem;
 import com.example.gtable.orderitem.repository.OrderItemRepository;
 import com.example.gtable.store.model.Store;
@@ -34,7 +34,8 @@ public class OrderService {
 	private final MenuRepository menuRepository;
 	private final OrderItemRepository orderItemRepository;
 	@Transactional
-	public OrderCreateResponseDto createOrder(Long storeId, Long tableId, OrderCreateRequestDto orderCreateRequestDto) {
+	public OrderCreateResponseDto createOrder(Long storeId, Long tableId,
+		OrderCreateRequestDto orderCreateRequestDto, String sessionId) {
 		parameterValidation(storeId, tableId, orderCreateRequestDto);
 
 		// 💡 [중복 주문 방지] signature 생성 및 체크
@@ -50,6 +51,7 @@ public class OrderService {
 			.tableId(tableId)
 			.store(store)
 			.signature(signature) // signature 저장
+			.sessionId(sessionId) // sessionId 저장
 			.build();
 		UserOrder savedOrder = orderRepository.save(order);
 
@@ -79,6 +81,18 @@ public class OrderService {
 
 		// 5. 응답 반환
 		return OrderCreateResponseDto.fromEntity(savedOrder);
+	}
+
+	@Transactional(readOnly = true)
+	public List<OrderItemListGetResponseDto> getOrderItems(Long storeId, Long tableId, String sessionId) {
+		// 1. UserOrder 목록 조회 (storeId, tableId, sessionId 기준)
+		List<UserOrder> userOrders = orderRepository.findByStore_StoreIdAndTableIdAndSessionId(storeId, tableId, sessionId);
+
+		// 2. OrderItem으로 변환
+		return userOrders.stream()
+			.flatMap(order -> order.getOrderItems().stream())
+			.map(OrderItemListGetResponseDto::fromEntity)
+			.toList();
 	}
 
 
