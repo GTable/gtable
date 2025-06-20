@@ -14,9 +14,12 @@ import com.example.gtable.menu.dto.MenuCreateRequest;
 import com.example.gtable.menu.dto.MenuCreateResponse;
 import com.example.gtable.menu.service.MenuService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
+@Tag(name = "Menu API", description = "메뉴 API")
 @RestController
 @RequestMapping("/admin/menus")
 @RequiredArgsConstructor
@@ -25,6 +28,8 @@ public class MenuController {
 	private final MenuService menuService;
 
 	@PostMapping("/create")
+	@Operation(summary = "메뉴 생성", description = "특정 주점에 대한 메뉴 생성")
+	@ApiResponse(responseCode = "201", description = "메뉴 생성")
 	public ResponseEntity<?> createMenu(@Valid @RequestBody MenuCreateRequest request) {
 		MenuCreateResponse response = menuService.createMenu(request);
 
@@ -38,12 +43,27 @@ public class MenuController {
 	}
 
 	@GetMapping("/all-menus/stores/{storeId}")
+	@Operation(summary = "주점 메뉴 조회", description = "특정 주점에 대한 메뉴 리스트 조회")
+	@ApiResponse(responseCode = "200", description = "특정 주점에서 등록한 메뉴 리스트 조회")
 	public ResponseEntity<?> getMenusByStoreId(@PathVariable Long storeId) {
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(
 				ApiUtils.success(
 					menuService.getMenusByStoreId(storeId)
+				)
+			);
+	}
+
+	@GetMapping("/all-menus/{menuId}")
+	@Operation(summary = "주점 메뉴 상세 조회", description = "특정 주점에 대한 메뉴 상세 조회")
+	@ApiResponse(responseCode = "200", description = "특정 주점에서 등록한 메뉴 상세 조회")
+	public ResponseEntity<?> getMenusByMenuId(@PathVariable Long menuId) {
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(
+				ApiUtils.success(
+					menuService. getMenusByMenuId(menuId)
 				)
 			);
 	}
