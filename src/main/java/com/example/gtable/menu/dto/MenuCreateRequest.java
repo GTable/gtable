@@ -19,7 +19,7 @@ public class MenuCreateRequest {
 	@NotNull
 	private String description;
 	@NotNull
-	private String price;
+	private Integer price;
 
 	public Menu toEntity() {
 		return Menu.builder()

@@ -29,9 +29,9 @@ public class Menu extends BaseTimeEntity {
 	private Long storeId;
 	private String name;
 	private String description;
-	private String price;
+	private Integer price;
 
-	public Menu(LocalDateTime createdAt, Long id, Long storeId, String name, String description, String price) {
+	public Menu(LocalDateTime createdAt, Long id, Long storeId, String name, String description, Integer price) {
 		super(createdAt);
 		this.Id = id;
 		this.storeId = storeId;
