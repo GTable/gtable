@@ -1,9 +1,9 @@
 package com.example.gtable.order.entity;
 
 import com.example.gtable.global.entity.BaseTimeEntity;
-import com.example.gtable.menu.model.Menu;
 import com.example.gtable.store.model.Store;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +28,9 @@ public class UserOrder extends BaseTimeEntity {
 	private Long id;
 
 	private Long tableId;
+
+	@Column(length = 64)
+	private String signature;
 
 	// Store와 연관관계 (N:1)
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

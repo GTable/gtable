@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.example.gtable.orderitem.entity.OrderItem;
 
 @Repository
-public interface OrderitemRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 }
