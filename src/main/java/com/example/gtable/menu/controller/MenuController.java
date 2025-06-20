@@ -54,4 +54,17 @@ public class MenuController {
 				)
 			);
 	}
+
+	@GetMapping("/all-menus/{menuId}")
+	@Operation(summary = "주점 메뉴 상세 조회", description = "특정 주점에 대한 메뉴 상세 조회")
+	@ApiResponse(responseCode = "200", description = "특정 주점에서 등록한 메뉴 상세 조회")
+	public ResponseEntity<?> getMenusByMenuId(@PathVariable Long menuId) {
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(
+				ApiUtils.success(
+					menuService. getMenusByMenuId(menuId)
+				)
+			);
+	}
 }

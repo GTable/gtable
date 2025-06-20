@@ -49,4 +49,17 @@ public class MenuService {
 
 		return MenuReadResponse.of(menuReadRespons);
 	}
+	@Transactional(readOnly = true)
+	public Object getMenusByMenuId(Long menuId) {
+		Menu menu = menuRepository.findById(menuId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 주점에 해당 메뉴가 존재하지 않습니다."));
+
+		return MenuReadDto.builder()
+			.menuId(menuId)
+			.storeId(menu.getStoreId())
+			.name(menu.getName())
+			.description(menu.getDescription())
+			.price(menu.getPrice())
+			.build();
+	}
 }
