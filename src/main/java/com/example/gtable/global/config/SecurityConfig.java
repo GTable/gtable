@@ -57,9 +57,11 @@ public class SecurityConfig {
 					"/oauth2/authorization/kakao", // 카카오 로그인 요청
 					"/login/oauth2/code/**", // 카카오 인증 콜백
 					"/api/refresh-token", // refresh token (토큰 갱신)
-					"/admin/stores/**",
 					"/admin/menus/**",
-					"/admin/users/**",
+					"/admin/stores/**",
+          "/admin/users/**",
+					"/api/users/signup",
+					"/api/users/login",
 					"/orders/**",
 					"/swagger-ui/**",
 					"/v3/api-docs/**",

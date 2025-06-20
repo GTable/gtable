@@ -37,7 +37,7 @@ public class MenuService {
 	public MenuReadResponse getMenusByStoreId(Long storeId) {
 		List<Menu> menus = menuRepository.findAllByStoreId(storeId);
 
-		List<MenuReadDto> menuReadRespons = menus.stream()
+		List<MenuReadDto> menuReadResponse = menus.stream()
 			.map(menu -> {
 				List<MenuImage> images = menuImageRepository.findByMenu(menu);
 				List<MenuImageUploadResponse> imageDto = images.stream()
@@ -47,7 +47,7 @@ public class MenuService {
 			})
 			.toList();
 
-		return MenuReadResponse.of(menuReadRespons);
+		return MenuReadResponse.of(menuReadResponse);
 	}
 	@Transactional(readOnly = true)
 	public MenuReadDto getMenusByMenuId(Long menuId) {
