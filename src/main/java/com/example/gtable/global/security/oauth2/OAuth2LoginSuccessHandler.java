@@ -56,9 +56,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		// 2. refreshToken을 HttpOnly 쿠키로 설정
 		Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
 		refreshTokenCookie.setHttpOnly(true); // JS 접근 불가
-		refreshTokenCookie.setSecure(false); // 운영환경 https라면 true
+		refreshTokenCookie.setSecure(false); // 운영환경 https라면 true로 변경 필요
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setMaxAge(30 * 24 * 60 * 60); // 30일
+		// CSRF 방지를 위한 SameSite 속성 추가 (Servlet 3.1+ 지원시)
+		response.setHeader("Set-Cookie",
+			String.format("%s=%s; HttpOnly; Secure; Path=/; Max-Age=%d; SameSite=Lax",
+				"refreshToken", refreshToken, 30 * 24 * 60 * 60));
 		response.addCookie(refreshTokenCookie);
 
 		// 3. 프론트엔드로 리다이렉트 (accessToken만 쿼리로 전달)
