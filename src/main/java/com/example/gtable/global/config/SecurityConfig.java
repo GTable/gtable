@@ -59,7 +59,7 @@ public class SecurityConfig {
 					"/api/refresh-token", // refresh token (토큰 갱신)
 					"/admin/menus/**",
 					"/admin/stores/**",
-          "/admin/users/**",
+					"/admin/users/**",
 					"/api/users/signup",
 					"/api/users/login",
 					"/orders/**",
