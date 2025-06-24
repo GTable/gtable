@@ -51,6 +51,7 @@ public class ReservationService {
 			.userId(saved.getUser().getId())
 			.requestedAt(saved.getRequestedAt())
 			.status(saved.getStatus().name())
+			.partySize(saved.getPartySize())
 			.build();
 	}
 	@Transactional(readOnly = true)

@@ -12,4 +12,5 @@ public class ReservationCreateResponseDto {
 	private Long userId;
 	private LocalDateTime requestedAt;
 	private String status;
+	private Integer partySize;
 }

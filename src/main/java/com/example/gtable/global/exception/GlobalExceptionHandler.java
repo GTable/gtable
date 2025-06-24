@@ -114,10 +114,10 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(value = NOT_FOUND)
-	@ExceptionHandler(IllegalStateException.class)
+	@ExceptionHandler(MissingUserInfoException.class)
 	public ErrorResponse missingUserInfoException(MissingUserInfoException e) {
-		log.error("missingUserInform", e);
-		return new ErrorResponse(e.getMessage(), NOT_OWN_BOOKMARK.getCode());
+		log.error("missingUserInfoException", e);
+		return new ErrorResponse(e.getMessage(), MISSING_USER.getCode());
 	}
 
 

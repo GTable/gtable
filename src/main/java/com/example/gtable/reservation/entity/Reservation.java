@@ -33,7 +33,7 @@ public class Reservation {
 	@Column(nullable = false)
 	private ReservationStatus status;
 
-	@Column(name = "partysize", nullable = false)
+	@Column(name = "party_size", nullable = false)
 	private Integer partySize;
 
 }
