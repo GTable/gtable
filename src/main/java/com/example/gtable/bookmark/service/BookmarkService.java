@@ -15,7 +15,7 @@ import com.example.gtable.global.security.oauth2.dto.CustomOAuth2User;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
 import com.example.gtable.user.entity.User;
-import com.example.gtable.user.exception.MissingUserInfoException;
+import com.example.gtable.user.exception.UserNotFoundException;
 import com.example.gtable.user.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -33,7 +33,7 @@ public class BookmarkService {
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new EntityNotFoundException(storeId + " store not found."));
 		User user = userRepository.findById(customOAuth2User.getUserId())
-			.orElseThrow(() -> new EntityNotFoundException("User not found"));
+			.orElseThrow(UserNotFoundException::new);
 
 		if (bookmarkRepository.existsByUserAndStore(user, store)) {
 			throw new DuplicateBookmarkException();
@@ -50,7 +50,7 @@ public class BookmarkService {
 	@Transactional(readOnly = true)
 	public List<BookmarkGetResponse> getBookmarks(CustomOAuth2User customOAuth2User) {
 		User user = userRepository.findById(customOAuth2User.getUserId())
-			.orElseThrow(() -> new EntityNotFoundException("User not found"));
+			.orElseThrow(UserNotFoundException::new);
 		return bookmarkRepository.findAllByUser(user)
 			.stream()
 			.map(BookmarkGetResponse::fromEntity)
@@ -75,7 +75,7 @@ public class BookmarkService {
 			throw new IllegalArgumentException("storeId must be a positive number");
 		}
 		if (customOAuth2User == null || customOAuth2User.getUserId() == null) {
-			throw new MissingUserInfoException();
+			throw new UserNotFoundException();
 		}
 	}
 }

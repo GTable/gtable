@@ -16,10 +16,12 @@ import com.example.gtable.reservation.dto.ReservationStatusSummaryDto;
 import com.example.gtable.reservation.dto.ReservationStatusUpdateRequestDto;
 import com.example.gtable.reservation.entity.Reservation;
 import com.example.gtable.reservation.entity.ReservationStatus;
+import com.example.gtable.reservation.exception.ReservationNotFoundException;
 import com.example.gtable.reservation.repository.ReservationRepository;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
 import com.example.gtable.user.entity.User;
+import com.example.gtable.user.exception.UserNotFoundException;
 import com.example.gtable.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,7 @@ public class ReservationService {
 		Store store = storeRepository.findById(storeId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 store"));
 		User user = userRepository.findById(customOAuth2User.getUserId())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 user"));
+			.orElseThrow(UserNotFoundException::new);
 
 		Reservation reservation = Reservation.builder()
 			.store(store)
@@ -87,7 +89,7 @@ public class ReservationService {
 	@Transactional
 	public CallGetResponseDto updateReservationStatus(Long reservationId, ReservationStatusUpdateRequestDto requestDto) {
 		Reservation reservation = reservationRepository.findById(reservationId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 reservation"));
+			.orElseThrow(ReservationNotFoundException::new);
 			reservation.updateStatus(requestDto.getStatus());
 		return CallGetResponseDto.fromEntity(reservation);
 	}

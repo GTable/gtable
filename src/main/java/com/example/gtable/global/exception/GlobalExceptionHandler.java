@@ -23,7 +23,11 @@ import com.example.gtable.bookmark.exception.DuplicateBookmarkException;
 import com.example.gtable.global.security.exception.BusinessException;
 import com.example.gtable.global.security.exception.ResourceNotFoundException;
 import com.example.gtable.global.security.exception.UnauthorizedException;
-import com.example.gtable.user.exception.MissingUserInfoException;
+import com.example.gtable.order.exception.DuplicateOrderException;
+import com.example.gtable.order.exception.OrderItemsEmptyException;
+import com.example.gtable.order.exception.OrderParameterEmptyException;
+import com.example.gtable.reservation.exception.ReservationNotFoundException;
+import com.example.gtable.user.exception.UserNotFoundException;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +110,7 @@ public class GlobalExceptionHandler {
 		return new ErrorResponse(e.getMessage(), ErrorMessage.DUPLICATE_BOOKMARK.getCode());
 	}
 
-	@ResponseStatus(value = BAD_REQUEST)
+	@ResponseStatus(value = FORBIDDEN)
 	@ExceptionHandler(BookmarkOwnerMismatchException.class)
 	public ErrorResponse bookmarkOwnerMismatchException(BookmarkOwnerMismatchException e) {
 		log.error("bookmarkOwnerMismatchException", e);
@@ -114,10 +118,38 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(value = NOT_FOUND)
-	@ExceptionHandler(MissingUserInfoException.class)
-	public ErrorResponse missingUserInfoException(MissingUserInfoException e) {
-		log.error("missingUserInfoException", e);
-		return new ErrorResponse(e.getMessage(), MISSING_USER.getCode());
+	@ExceptionHandler(UserNotFoundException.class)
+	public ErrorResponse userNotFoundException(UserNotFoundException e) {
+		log.error("userNotFoundException", e);
+		return new ErrorResponse(e.getMessage(), NOTFOUND_USER.getCode());
+	}
+
+	@ResponseStatus(value = BAD_REQUEST)
+	@ExceptionHandler(OrderParameterEmptyException.class)
+	public ErrorResponse orderParameterEmptyException(OrderParameterEmptyException e) {
+		log.error("orderParameterEmptyException", e);
+		return new ErrorResponse(e.getMessage(), ORDER_PARAMETER_EMPTY.getCode());
+	}
+
+	@ResponseStatus(value = BAD_REQUEST)
+	@ExceptionHandler(OrderItemsEmptyException.class)
+	public ErrorResponse orderItemsEmptyException(OrderItemsEmptyException e) {
+		log.error("orderItemsEmptyException", e);
+		return new ErrorResponse(e.getMessage(), ORDER_ITEMS_EMPTY.getCode());
+	}
+
+	@ResponseStatus(value = BAD_REQUEST)
+	@ExceptionHandler(DuplicateOrderException.class)
+	public ErrorResponse duplicateOrderException(DuplicateOrderException e) {
+		log.error("duplicateOrderException", e);
+		return new ErrorResponse(e.getMessage(), ErrorMessage.DUPLICATE_ORDER.getCode());
+	}
+
+	@ResponseStatus(value = NOT_FOUND)
+	@ExceptionHandler(ReservationNotFoundException.class)
+	public ErrorResponse reservationNotFoundException(ReservationNotFoundException e) {
+		log.error("reservationNotFoundException", e);
+		return new ErrorResponse(e.getMessage(), NOTFOUND_RESERVATION.getCode());
 	}
 
 

@@ -17,6 +17,9 @@ import com.example.gtable.order.dto.CartItemDto;
 import com.example.gtable.order.dto.OrderCreateRequestDto;
 import com.example.gtable.order.dto.OrderCreateResponseDto;
 import com.example.gtable.order.entity.UserOrder;
+import com.example.gtable.order.exception.DuplicateOrderException;
+import com.example.gtable.order.exception.OrderItemsEmptyException;
+import com.example.gtable.order.exception.OrderParameterEmptyException;
 import com.example.gtable.order.repository.OrderRepository;
 import com.example.gtable.orderitem.dto.OrderItemListGetResponseDto;
 import com.example.gtable.orderitem.entity.OrderItem;
@@ -65,7 +68,7 @@ public class OrderService {
 			.collect(Collectors.toMap(Menu::getId, Function.identity()));
 
 		// 4. 각 장바구니 항목에 대해 OrderItem 생성 및 저장
-		List<OrderItem> orderItems = (List<OrderItem>)orderCreateRequestDto.getItems().stream()
+		List<OrderItem> orderItems = orderCreateRequestDto.getItems().stream()
 			.map(item -> {
 				Menu menu = Optional.ofNullable(menuMap.get(item.getMenuId()))
 					.orElseThrow(() -> new IllegalArgumentException("menu not found: " + item.getMenuId()));
@@ -75,7 +78,8 @@ public class OrderService {
 					.quantity(item.getQuantity())
 					.build();
 			})
-			.toList();
+			.collect(Collectors.toList());
+
 
 		orderItemRepository.saveAll(orderItems);
 
@@ -98,10 +102,10 @@ public class OrderService {
 
 	private static void parameterValidation(Long storeId, Long tableId, OrderCreateRequestDto orderCreateRequestDto) {
 		if (storeId == null || tableId == null || orderCreateRequestDto == null) {
-			        throw new IllegalArgumentException("필수 매개변수가 누락되었습니다");
+			        throw new OrderParameterEmptyException();
 		}
 		if (orderCreateRequestDto.getItems() == null || orderCreateRequestDto.getItems().isEmpty()) {
-			throw new IllegalArgumentException("주문 항목이 없습니다");
+			throw new OrderItemsEmptyException();
 		}
 	}
 	private String generateOrderSignature(Long storeId, Long tableId, List<CartItemDto> items) {
@@ -118,7 +122,7 @@ public class OrderService {
 		LocalDateTime threshold = LocalDateTime.now().minusSeconds(2);
 		boolean exists = orderRepository.existsBySignatureAndCreatedAtAfter(signature, threshold);
 		if (exists) {
-			throw new IllegalArgumentException("동일한 장바구니로 최근 주문이 접수되었습니다.");
+			throw new DuplicateOrderException();
 		}
 	}
 }
