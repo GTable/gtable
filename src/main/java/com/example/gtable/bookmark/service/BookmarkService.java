@@ -8,11 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.gtable.bookmark.dto.BookmarkCreateResponse;
 import com.example.gtable.bookmark.dto.BookmarkGetResponse;
 import com.example.gtable.bookmark.entity.Bookmark;
+import com.example.gtable.bookmark.exception.BookmarkOwnerMismatchException;
+import com.example.gtable.bookmark.exception.DuplicateBookmarkException;
 import com.example.gtable.bookmark.repository.BookmarkRepository;
 import com.example.gtable.global.security.oauth2.dto.CustomOAuth2User;
 import com.example.gtable.store.model.Store;
 import com.example.gtable.store.repository.StoreRepository;
 import com.example.gtable.user.entity.User;
+import com.example.gtable.user.exception.MissingUserInfoException;
 import com.example.gtable.user.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -33,7 +36,7 @@ public class BookmarkService {
 			.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 		if (bookmarkRepository.existsByUserAndStore(user, store)) {
-			throw new IllegalArgumentException("already bookmarked");
+			throw new DuplicateBookmarkException();
 		}
 
 		Bookmark bookmark = Bookmark.builder()
@@ -60,7 +63,7 @@ public class BookmarkService {
 		Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
 			.orElseThrow(() -> new EntityNotFoundException(bookmarkId + " bookmark not found."));
 		if (bookmark.getUser().getId() != customOAuth2User.getUserId()) {
-			throw new IllegalArgumentException("you can only delete your own bookmark");
+			throw new BookmarkOwnerMismatchException();
 		}
 		bookmarkRepository.delete(bookmark);
 		return "Bookmark ID " + bookmarkId + " deleted.";
@@ -72,7 +75,7 @@ public class BookmarkService {
 			throw new IllegalArgumentException("storeId must be a positive number");
 		}
 		if (customOAuth2User == null || customOAuth2User.getUserId() == null) {
-			throw new IllegalArgumentException("UserInfo is required");
+			throw new MissingUserInfoException();
 		}
 	}
 }

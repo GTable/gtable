@@ -1,4 +1,4 @@
-package com.example.gtable.global.security.exception;
+package com.example.gtable.global.exception;
 
 import java.util.HashMap;
 import java.util.Map;
