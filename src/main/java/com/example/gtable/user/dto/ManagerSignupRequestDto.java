@@ -36,7 +36,7 @@ public class ManagerSignupRequestDto {
 			.email(email)
 			.password(password)
 			.nickname(nickname)
-			.socialType(SocialType.KAKAO)
+			.socialType(SocialType.LOCAL)
 			.role(Role.MANAGER)
 			.build();
 

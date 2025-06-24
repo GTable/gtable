@@ -1,5 +1,7 @@
 package com.example.gtable.global.security.exception;
 
+import com.example.gtable.global.exception.ErrorMessage;
+
 public class UnauthorizedException extends RuntimeException {
 	private final ErrorMessage errorMessage;
 

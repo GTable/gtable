@@ -1,13 +1,12 @@
-package com.example.gtable.global.security.exception;
+package com.example.gtable.global.exception;
 
-import static com.example.gtable.global.security.exception.ErrorMessage.*;
+import static com.example.gtable.global.exception.ErrorMessage.*;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.*;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -18,6 +17,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
+
+import com.example.gtable.bookmark.exception.BookmarkOwnerMismatchException;
+import com.example.gtable.bookmark.exception.DuplicateBookmarkException;
+import com.example.gtable.global.security.exception.BusinessException;
+import com.example.gtable.global.security.exception.ResourceNotFoundException;
+import com.example.gtable.global.security.exception.UnauthorizedException;
+import com.example.gtable.user.exception.MissingUserInfoException;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +97,27 @@ public class GlobalExceptionHandler {
 	public ErrorResponse handleMultipartException(MultipartException e) {
 		log.error("handleMultipartException", e);
 		return new ErrorResponse(e.getMessage(), INVALID_INPUT_VALUE.getCode());
+	}
+
+	@ResponseStatus(value = BAD_REQUEST)
+	@ExceptionHandler(DuplicateBookmarkException.class)
+	public ErrorResponse handleDuplicateBookmarkException(DuplicateBookmarkException e) {
+		log.error("handleDuplicateBookmarkException", e);
+		return new ErrorResponse(e.getMessage(), ErrorMessage.DUPLICATE_BOOKMARK.getCode());
+	}
+
+	@ResponseStatus(value = BAD_REQUEST)
+	@ExceptionHandler(BookmarkOwnerMismatchException.class)
+	public ErrorResponse bookmarkOwnerMismatchException(BookmarkOwnerMismatchException e) {
+		log.error("bookmarkOwnerMismatchException", e);
+		return new ErrorResponse(e.getMessage(), NOT_OWN_BOOKMARK.getCode());
+	}
+
+	@ResponseStatus(value = NOT_FOUND)
+	@ExceptionHandler(MissingUserInfoException.class)
+	public ErrorResponse missingUserInfoException(MissingUserInfoException e) {
+		log.error("missingUserInfoException", e);
+		return new ErrorResponse(e.getMessage(), MISSING_USER.getCode());
 	}
 
 
