@@ -1,15 +1,19 @@
 package com.example.gtable.reservation.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.gtable.global.security.oauth2.dto.CustomOAuth2User;
+import com.example.gtable.reservation.dto.CallGetResponseDto;
 import com.example.gtable.reservation.dto.ReservationCreateRequestDto;
 import com.example.gtable.reservation.dto.ReservationCreateResponseDto;
 import com.example.gtable.reservation.dto.ReservationGetResponseDto;
+import com.example.gtable.reservation.dto.ReservationStatusSummaryDto;
+import com.example.gtable.reservation.dto.ReservationStatusUpdateRequestDto;
 import com.example.gtable.reservation.entity.Reservation;
 import com.example.gtable.reservation.entity.ReservationStatus;
 import com.example.gtable.reservation.repository.ReservationRepository;
@@ -55,14 +59,39 @@ public class ReservationService {
 			.build();
 	}
 	@Transactional(readOnly = true)
-	public List<ReservationGetResponseDto> getReservationListByStoreId(Long storeId) {
-		List<Reservation> reservations = reservationRepository.findAllByStore_StoreId(storeId);
+	public ReservationStatusSummaryDto getReservationListByStoreId(Long storeId) {
+		List<Reservation> reservations = reservationRepository.findAllByStore_StoreIdOrderByRequestedAtAsc(storeId);
 
-		return reservations.stream()
-			.map(ReservationGetResponseDto::fromEntity)
-			.toList();
+		// 상태별 카운트 집계
+		int waitingCount = 0;
+		int confirmedCount = 0;
+		int cancelledCount = 0;
+		int callingCount = 0;
+		List<ReservationGetResponseDto> reservationDtoList = new ArrayList<>();
+		for (Reservation r : reservations) {
+			if (r.getStatus() == ReservationStatus.WAITING) waitingCount++;
+			if (r.getStatus() == ReservationStatus.CONFIRMED) confirmedCount++;
+			if (r.getStatus() == ReservationStatus.CANCELLED) cancelledCount++;
+			if (r.getStatus() == ReservationStatus.CALLING) callingCount++;
+			reservationDtoList.add(ReservationGetResponseDto.fromEntity(r));
+		}
+
+		return ReservationStatusSummaryDto.builder()
+			.waitingCount(waitingCount)
+			.confirmedCount(confirmedCount)
+			.cancelledCount(cancelledCount)
+			.callingCount(callingCount)
+			.reservationList(reservationDtoList)
+			.build();
+	}
+	@Transactional
+	public CallGetResponseDto updateReservationStatus(Long reservationId, ReservationStatusUpdateRequestDto requestDto) {
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 reservation"));
+			reservation.updateStatus(requestDto.getStatus());
+		return CallGetResponseDto.fromEntity(reservation);
 	}
 
-	// 나머지 메서드도 동일하게 store/user 접근 시 getId() 활용
+
 }
 

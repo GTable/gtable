@@ -36,4 +36,8 @@ public class Reservation {
 	@Column(name = "party_size", nullable = false)
 	private Integer partySize;
 
+	public void updateStatus(ReservationStatus status) {
+		this.status = status;
+	}
+
 }
