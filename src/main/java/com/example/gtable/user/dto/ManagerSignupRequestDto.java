@@ -23,13 +23,17 @@ public class ManagerSignupRequestDto {
 
 	@NotBlank
 	@Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}")
-	@Schema(description = "비밀번호", example = "1234568!@")
+	@Schema(description = "비밀번호", example = "1234568tt!@")
 	private String password;
 
 	@NotBlank
 	@Pattern(regexp = "^[a-zA-Z가-힣]{2,12}$")
-	@Schema(description = "닉네임", example = "가십이")
+	@Schema(description = "닉네임", example = "테스터")
 	private String nickname;
+
+	@NotBlank
+	@Schema(description = "로그인타입", example = "LOCAL")
+	private String socialType;
 
 	public User toEntity() {
 		return User.builder()

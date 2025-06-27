@@ -47,6 +47,7 @@ public class ReservationService {
 			.user(user)
 			.requestedAt(LocalDateTime.now())
 			.status(ReservationStatus.WAITING)
+			.partySize(requestDto.getPartySize())
 			.build();
 
 		Reservation saved = reservationRepository.save(reservation);
