@@ -34,6 +34,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
+			.cors(cors -> cors.configurationSource(corsConfigurationSource))
 			// CSRF 방어 기능 비활성화 (jwt 토큰을 사용할 것이기에 필요없음)
 			.csrf(AbstractHttpConfigurer::disable)
 			// 시큐리티 폼 로그인 비활성화
